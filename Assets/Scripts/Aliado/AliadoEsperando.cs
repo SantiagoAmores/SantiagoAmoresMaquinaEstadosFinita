@@ -27,6 +27,7 @@ public class AliadoEsperando : AliadoEstado
 
     public override void Actualizar()
     {
+        //Si puede ver al jugador deja de esperar
         if (PuedeVerJugador())
         {
             siguienteEstado = new AliadoSiguiendo(aliadoIA);
