@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Estado
+public class PatrulleroEstado
 {
 
     static public EnemigoIA enemigoIA;
@@ -27,10 +27,10 @@ public class Estado
 
     public ESTADO nombre; // Para guardar el nombre del estado
     protected EVENTO faseActual; // Para guardar la fase en la que nos encontramos
-    protected Estado siguienteEstado; // El estado que se EJECUTARÁ A CONTINUACIÓN del estado actual
+    protected PatrulleroEstado siguienteEstado; // El estado que se EJECUTARÁ A CONTINUACIÓN del estado actual
 
     // Constructor
-    public Estado()
+    public PatrulleroEstado()
     {
     }
 
@@ -40,7 +40,7 @@ public class Estado
     public virtual void Salir() { faseActual = EVENTO.SALIR; } // La fase de SALIR es la última antes de cambiar de ESTADO, aquí deberiamos limpiar lo que haga falta.
 
     // Este es la función a la que llamaremos para que el NPC inicie la máquina de estados. Vincula los EVENTOS con las funciones que ejecuta cada uno
-    public Estado Procesar()
+    public PatrulleroEstado Procesar()
     {
         if (faseActual == EVENTO.ENTRAR) Entrar();
         if (faseActual == EVENTO.ACTUALIZAR) Actualizar();

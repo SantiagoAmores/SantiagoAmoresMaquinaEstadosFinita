@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public class Atacar : Estado
+public class PatrulleroAtacar : PatrulleroEstado
 {
-    public Atacar() : base()
+    public PatrulleroAtacar() : base()
     {
         Debug.Log("ATACAR");
         nombre = ESTADO.ATACAR; // Guardamos el nombre del estado en el que nos encontramos.
@@ -25,7 +25,7 @@ public class Atacar : Estado
 
         if (!PuedeVerJugador())
         {
-            siguienteEstado = new Vigilar(); // Si el NPC no puede atacar al jugador, lo ponemos a vigilar (por ejemplo).
+            siguienteEstado = new PatrulleroVigilar(); // Si el NPC no puede atacar al jugador, lo ponemos a vigilar (por ejemplo).
             faseActual = EVENTO.SALIR; // Cambiamos de FASE ya que pasamos de ATACAR a VIGILAR.
         }
     }

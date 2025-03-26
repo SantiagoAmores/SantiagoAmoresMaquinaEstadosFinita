@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.AI;
 
 // Constructor para VIGILAR
-public class Vigilar : Estado
+public class PatrulleroVigilar : PatrulleroEstado
 {
-    public Vigilar() : base()
+    public PatrulleroVigilar() : base()
     {
         Debug.Log("VIGILAR");
         nombre = ESTADO.VIGILAR; // Guardamos el nombre del estado en el que nos encontramos.
@@ -20,7 +20,7 @@ public class Vigilar : Estado
 
         enemigoIA.render.material.color = Color.green;
 
-    }
+        }
 
     public override void Actualizar()
     {
@@ -28,7 +28,7 @@ public class Vigilar : Estado
 
         if (PuedeVerJugador())
         {
-            siguienteEstado = new Atacar();
+            siguienteEstado = new PatrulleroAtacar();
             faseActual = EVENTO.SALIR; // Cambiamos de FASE ya que pasamos de VIGILAR a ATACAR.
         }
     }
