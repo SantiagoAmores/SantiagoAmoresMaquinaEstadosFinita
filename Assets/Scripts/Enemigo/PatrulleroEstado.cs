@@ -60,14 +60,31 @@ public class PatrulleroEstado
         float distancia = Vector3.Distance(posEnemigo, posJugador);
 
         if (distancia < 15)
-        {
-            return true;
+        {   
+            RaycastHit hit;
+            Vector3 direccion = (posJugador - posEnemigo).normalized;
+
+            // Dibujar el rayo en la escena para depuración
+            Debug.DrawRay(posEnemigo, direccion * distancia, Color.red);
+
+            // Lanza el Raycast desde el enemigo hacia el jugador
+            if (Physics.Raycast(posEnemigo, direccion, out hit, distancia))
+            {
+                Debug.Log("Raycast golpeó: " + hit.collider.gameObject.name);
+
+                // Si el raycast golpea al jugador, significa que lo ve
+                if (hit.collider.gameObject.name == "Jugador")
+                {
+                    // Si ve al jugador, vuelve a vigilar
+                    siguienteEstado = new PatrulleroAtacar();
+                    faseActual = EVENTO.SALIR;
+
+                    return true; // Confirma que el enemigo ve al jugador
+                }
+            }
         }
 
-        else
-        {
-            return false; // DE MOMENTO NO
-        }
+        return false; // Si no lo ve, devuelve falso
 
     }
 

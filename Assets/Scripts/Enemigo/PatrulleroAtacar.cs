@@ -6,6 +6,9 @@ using UnityEngine.AI;
 
 public class PatrulleroAtacar : PatrulleroEstado
 {
+
+    private float rangoAtaque = 10f;
+
     public PatrulleroAtacar() : base()
     {
         Debug.Log("ATACAR");
@@ -17,7 +20,9 @@ public class PatrulleroAtacar : PatrulleroEstado
         // Le pondríamos la animación de disparar, o lo que sea...
         base.Entrar();
 
-        enemigoIA.render.material.color = Color.red;
+        enemigoIA.render.material.color = Color.red; //  Obtener el render para que su material se haga de color rojo
+
+        enemigoIA.empezarDisparar(); // Iniciar el disparo
     }
 
     public override void Actualizar()
@@ -33,12 +38,13 @@ public class PatrulleroAtacar : PatrulleroEstado
     public override void Salir()
     {
         // Le resetearíamos la animación de disparar, detener las corrutinas, o lo que sea...
+
+        enemigoIA.pararDisparar(); // Detener el disparo al salir
         base.Salir();
     }
-
     public bool PuedeAtacar()
     {
-        // ...
-        return false; // El NPC NO ESTÁ lo suficientemente cerca para atacar al jugador.
+        float distancia = Vector3.Distance(enemigoIA.transform.position, enemigoIA.jugador.transform.position);
+        return distancia <= rangoAtaque;
     }
 }

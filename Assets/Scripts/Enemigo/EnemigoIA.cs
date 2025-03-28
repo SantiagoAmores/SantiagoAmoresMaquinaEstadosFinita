@@ -8,13 +8,8 @@ public class EnemigoIA: MonoBehaviour
     PatrulleroEstado FSM;
     public GameObject jugador;
     public Renderer render;
-
-    public Transform puntoA;
-    public Transform puntoB;
-    public float velocidad = 10f;
-
-    private Vector3 objetivo;
-    //private bool enMovimiento = true;
+    public GameObject bala;
+    public float fuerzaDisparar = 10f;
 
     void Start()
     {
@@ -29,5 +24,29 @@ public class EnemigoIA: MonoBehaviour
     void Update()
     {
         FSM = FSM.Procesar(); // INICIAMOS LA FSM
+    }
+
+    public void empezarDisparar()
+    {
+        StartCoroutine("disparando");
+    }
+
+    public void pararDisparar()
+    {
+        StopCoroutine("disparando");
+    }
+
+    public IEnumerator disparando()
+    {
+        while (true)
+        {
+            GameObject balaInstanciada = Instantiate(bala, transform.position, Quaternion.identity);
+
+            balaInstanciada.GetComponent<Rigidbody>().AddForce(transform.forward * fuerzaDisparar, ForceMode.Impulse);
+
+            yield return new WaitForSeconds(2);
+        }
+
+        yield return null;
     }
 }
