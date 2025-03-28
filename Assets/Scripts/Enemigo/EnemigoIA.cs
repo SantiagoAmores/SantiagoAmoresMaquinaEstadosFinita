@@ -11,6 +11,9 @@ public class EnemigoIA: MonoBehaviour
     public GameObject bala;
     public float fuerzaDisparar = 10f;
 
+    public GameObject puntoA;
+    public GameObject puntoB;
+
     void Start()
     {
         jugador = GameObject.Find("Jugador");
@@ -18,6 +21,9 @@ public class EnemigoIA: MonoBehaviour
         
         FSM = new PatrulleroVigilar(); // CREAMOS EL ESTADO INICIAL DEL NPC
         FSM.inicializarVariables(this);
+
+        puntoA = GameObject.Find("PuntoA");
+        puntoB = GameObject.Find("PuntoB");
 
     }
 
@@ -28,12 +34,13 @@ public class EnemigoIA: MonoBehaviour
 
     public void empezarDisparar()
     {
-        StartCoroutine("disparando");
+            StartCoroutine("disparando");
     }
 
     public void pararDisparar()
     {
         StopCoroutine("disparando");
+
     }
 
     public IEnumerator disparando()

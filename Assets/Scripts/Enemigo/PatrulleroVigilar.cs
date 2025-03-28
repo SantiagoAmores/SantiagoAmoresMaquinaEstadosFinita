@@ -9,8 +9,6 @@ public class PatrulleroVigilar : PatrulleroEstado
 
     // Patrulla
     private NavMeshAgent agente;
-    private Vector3 puntoA;
-    private Vector3 puntoB;
     private Vector3 objetivoActual;
 
     public PatrulleroVigilar() : base()
@@ -33,9 +31,10 @@ public class PatrulleroVigilar : PatrulleroEstado
         agente = enemigoIA.GetComponent<NavMeshAgent>();
 
         // Puntos entre los que se realiza la patrulla
-        puntoA = enemigoIA.transform.position;
-        puntoB = puntoA + new Vector3(25, 0, 0); // Distancia a recorrer en el eje x
+        Vector3 puntoA = enemigoIA.puntoA.transform.position;
+        Vector3 puntoB = enemigoIA.puntoB.transform.position;
 
+        // Establecer el primer destino de la patrulla
         objetivoActual = puntoB;
         agente.SetDestination(objetivoActual);
 
@@ -48,23 +47,49 @@ public class PatrulleroVigilar : PatrulleroEstado
         // Patrulla
         if (Vector3.Distance(enemigoIA.transform.position, objetivoActual) < 1f)
         {
-            if (objetivoActual == puntoA)
+            if (objetivoActual == enemigoIA.puntoA.transform.position)
             {
-                objetivoActual = puntoB;
+                objetivoActual = enemigoIA.puntoB.transform.position;
             }
             else
             {
-                objetivoActual = puntoA;
+                objetivoActual = enemigoIA.puntoA.transform.position;
             }
+
             agente.SetDestination(objetivoActual);
         }
+    }
 
-        // Salir del estado si ve al jugador
-        if (PuedeVerJugador())
+    public bool PuedeVerJugador()
+    {
+        Vector3 posEnemigo = enemigoIA.gameObject.transform.position;
+        Vector3 posJugador = enemigoIA.jugador.transform.position;
+
+        float distancia = Vector3.Distance(posEnemigo, posJugador);
+
+        if (distancia < 15)
         {
-            siguienteEstado = new PatrulleroAtacar();
-            faseActual = EVENTO.SALIR; // Cambiamos de FASE ya que pasamos de VIGILAR a ATACAR.
+            RaycastHit hit;
+            Vector3 direccion = (posJugador - posEnemigo).normalized;
+
+            // Dibujar el rayo en la escena para depuración
+            Debug.DrawRay(posEnemigo, direccion * distancia, Color.red);
+
+            // Lanza el Raycast desde el enemigo hacia el jugador
+            if (Physics.Raycast(posEnemigo, direccion, out hit, distancia))
+            {
+                Debug.Log("Raycast golpeó: " + hit.collider.gameObject.name);
+
+                // Si el raycast golpea al jugador, significa que lo ve
+                if (hit.collider.gameObject.name == "Jugador")
+                {
+                    return true; // Confirma que el enemigo ve al jugador
+                }
+            }
         }
+
+        return false; // Si no lo ve, devuelve falso
+
     }
 
     public override void Salir()
