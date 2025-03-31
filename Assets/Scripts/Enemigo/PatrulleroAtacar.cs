@@ -48,39 +48,15 @@ public class PatrulleroAtacar : PatrulleroEstado
 
     public bool PuedeVerJugador()
     {
-        Vector3 posEnemigo = enemigoIA.gameObject.transform.position;
-        Vector3 posJugador = enemigoIA.jugador.transform.position;
-
-        float distancia = Vector3.Distance(posEnemigo, posJugador);
-
-        if (distancia < 15)
-        {
-            RaycastHit hit;
-            Vector3 direccion = (posJugador - posEnemigo).normalized;
-
-            // Dibujar el rayo en la escena para depuración
-            Debug.DrawRay(posEnemigo, direccion * distancia, Color.red);
-
-            // Lanza el Raycast desde el enemigo hacia el jugador
-            if (Physics.Raycast(posEnemigo, direccion, out hit, distancia))
-            {
-                Debug.Log("Raycast golpeó: " + hit.collider.gameObject.name);
-
-                // Si el raycast golpea al jugador, significa que lo ve
-                if (hit.collider.gameObject.name == "Jugador")
-                {
+      
                     return true; // Confirma que el enemigo ve al jugador
-                }
-            }
-        }
-
-        return false; // Si no lo ve, devuelve falso
+      
 
     }
 
     public bool PuedeAtacar()
     {
-        float distancia = Vector3.Distance(enemigoIA.transform.position, enemigoIA.jugador.transform.position);
+        float distancia = Vector3.Distance(enemigoIA.enemigo.transform.position, enemigoIA.jugador.transform.position);
         return distancia <= rangoAtaque;
     }
 }

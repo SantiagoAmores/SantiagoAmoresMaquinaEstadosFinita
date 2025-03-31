@@ -11,6 +11,7 @@ public class EnemigoIA: MonoBehaviour
     public GameObject bala;
     public float fuerzaDisparar = 10f;
 
+    public GameObject enemigo;
     public GameObject puntoA;
     public GameObject puntoB;
 
@@ -22,6 +23,8 @@ public class EnemigoIA: MonoBehaviour
         FSM = new PatrulleroVigilar(); // CREAMOS EL ESTADO INICIAL DEL NPC
         FSM.inicializarVariables(this);
 
+        enemigo = GameObject.Find("Enemigo");
+        
         puntoA = GameObject.Find("PuntoA");
         puntoB = GameObject.Find("PuntoB");
 
@@ -56,4 +59,5 @@ public class EnemigoIA: MonoBehaviour
 
         yield return null;
     }
+
 }
