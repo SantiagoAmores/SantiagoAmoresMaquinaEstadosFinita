@@ -50,9 +50,11 @@ public class EnemigoIA: MonoBehaviour
     {
         while (true)
         {
+
+            Vector3 dondeDisparar = jugador.transform.position;
             GameObject balaInstanciada = Instantiate(bala, transform.position, Quaternion.identity);
 
-            balaInstanciada.GetComponent<Rigidbody>().AddForce(transform.forward * fuerzaDisparar, ForceMode.Impulse);
+            balaInstanciada.GetComponent<Rigidbody>().AddForce((dondeDisparar - transform.position).normalized * fuerzaDisparar, ForceMode.Impulse);
 
             yield return new WaitForSeconds(2);
         }

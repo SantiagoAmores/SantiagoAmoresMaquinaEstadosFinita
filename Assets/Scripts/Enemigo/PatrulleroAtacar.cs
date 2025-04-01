@@ -8,12 +8,12 @@ public class PatrulleroAtacar : PatrulleroEstado
 {
 
     private float rangoAtaque = 10f;
-    public bool puedeDisparar;
 
     public PatrulleroAtacar() : base()
     {
         Debug.Log("ATACAR");
         nombre = ESTADO.ATACAR; // Guardamos el nombre del estado en el que nos encontramos.
+        PuedeAtacar();
     }
 
     public override void Entrar()
@@ -29,12 +29,11 @@ public class PatrulleroAtacar : PatrulleroEstado
     public override void Actualizar()
     {
 
-        if (!PuedeVerJugador())
+        if (!PuedeAtacar())
         {
             siguienteEstado = new PatrulleroVigilar(); // Si el NPC no puede atacar al jugador, lo ponemos a vigilar (por ejemplo).
             faseActual = EVENTO.SALIR; // Cambiamos de FASE ya que pasamos de ATACAR a VIGILAR.
 
-            enemigoIA.pararDisparar(); // Detener el disparo
         }
     }
 
@@ -44,14 +43,6 @@ public class PatrulleroAtacar : PatrulleroEstado
 
         enemigoIA.pararDisparar(); // Detener el disparo al salir
         base.Salir();
-    }
-
-    public bool PuedeVerJugador()
-    {
-      
-                    return true; // Confirma que el enemigo ve al jugador
-      
-
     }
 
     public bool PuedeAtacar()
