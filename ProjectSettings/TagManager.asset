@@ -7,6 +7,7 @@ TagManager:
   - Jugador
   - Enemigo
   - Aliado
+  - Pared
   layers:
   - Default
   - TransparentFX

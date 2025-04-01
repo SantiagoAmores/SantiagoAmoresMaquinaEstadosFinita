@@ -6,14 +6,11 @@ using UnityEngine.AI;
 // Constructor para VIGILAR
 public class PatrulleroVigilar : PatrulleroEstado
 {
-
-    // Patrulla
-    private NavMeshAgent agente;
-
     // Puntos entre los que se realiza la patrulla
     private Vector3 puntoA;
     private Vector3 puntoB;
 
+    // Posiciones
     private Vector3 posicionEnemigo;
     private Vector3 objetivoActual;
 
@@ -33,14 +30,15 @@ public class PatrulleroVigilar : PatrulleroEstado
         // Obtener el render para que su material se haga de color verde
         enemigoIA.render.material.color = Color.green;
 
-        // Obtener el agente de navegación
-        agente = enemigoIA.GetComponent<NavMeshAgent>();
+        // Obtener el agente de navegación y declaramos su velocidad
+        enemigoIA.agente = enemigoIA.GetComponent<NavMeshAgent>();
+        enemigoIA.agente.speed = 3.5f;
 
-        // Establecer el primer destino de la patrulla
+        // Establecemos los puntos de patrulla el primer destino
         puntoA = enemigoIA.puntoA.transform.position;
         puntoB = enemigoIA.puntoB.transform.position;
         objetivoActual = puntoB;
-        agente.SetDestination(objetivoActual);
+        enemigoIA.agente.SetDestination(objetivoActual);
 
     }
 
@@ -48,9 +46,10 @@ public class PatrulleroVigilar : PatrulleroEstado
     {
         // Le decimos que se vaya moviendo y patrullando...
 
+        // Actualizamos la posición del enemigo
         posicionEnemigo = enemigoIA.enemigo.transform.position;
 
-        // Patrulla
+        // Si el enemigo ha llegado cerca de su destino actual, cambia de objetivo
         if (Vector3.Distance(posicionEnemigo, objetivoActual) < 5f)
         {
 
@@ -65,18 +64,27 @@ public class PatrulleroVigilar : PatrulleroEstado
                 objetivoActual = puntoA;
             }
 
-            agente.SetDestination(objetivoActual);
+            // Asignamos el nuevo destino de patrulla
+            enemigoIA.agente.SetDestination(objetivoActual);
         }
 
+        // Obtenemos la posición del enemigo y del jugador
         Vector3 posEnemigo = enemigoIA.gameObject.transform.position;
         Vector3 posJugador = enemigoIA.jugador.transform.position;
        
+        // Declaramos Raycast
         RaycastHit hit;
+
+        // Calcula la dirección del enemigo hacia el jugador
         Vector3 direccion = (posJugador - posEnemigo).normalized;
 
+        // Calcula la distancia entre el enemigo y el jugador
         float distancia = Vector3.Distance(posEnemigo, posJugador);
+
+        // Dibujamos RayCast
         Debug.DrawRay(posEnemigo, direccion * distancia, Color.red);
 
+        // Si el jugador está dentro del rango de detección
         if (distancia < 15)
         {
             if (Physics.Raycast(posEnemigo, direccion, out hit, distancia))

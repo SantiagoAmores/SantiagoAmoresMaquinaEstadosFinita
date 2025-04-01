@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public class PatrulleroAtacar : PatrulleroEstado
 {
 
+    // Distancia maxima de ataque
     private float rangoAtaque = 10f;
 
     public PatrulleroAtacar() : base()
@@ -21,17 +22,17 @@ public class PatrulleroAtacar : PatrulleroEstado
         // Le pondríamos la animación de disparar, o lo que sea...
         base.Entrar();
 
-        enemigoIA.render.material.color = Color.red; //  Obtener el render para que su material se haga de color rojo
+        // Obtener el render para que su material se haga de color rojo indicando que esta en modo ataque
+        enemigoIA.render.material.color = Color.red; 
 
-        enemigoIA.empezarDisparar(); // Iniciar el disparo
     }
 
     public override void Actualizar()
     {
-
+        // Si el enemigo ya no puede atacar, cambia de estado a "Vigilar"
         if (!PuedeAtacar())
         {
-            siguienteEstado = new PatrulleroVigilar(); // Si el NPC no puede atacar al jugador, lo ponemos a vigilar (por ejemplo).
+            siguienteEstado = new PatrulleroVigilar(); // Si el NPC no puede atacar al jugador, lo ponemos a vigilar.
             faseActual = EVENTO.SALIR; // Cambiamos de FASE ya que pasamos de ATACAR a VIGILAR.
 
         }
@@ -39,15 +40,58 @@ public class PatrulleroAtacar : PatrulleroEstado
 
     public override void Salir()
     {
-        // Le resetearíamos la animación de disparar, detener las corrutinas, o lo que sea...
+        // Detener el disparo al salir
+        enemigoIA.pararDisparar(); 
 
-        enemigoIA.pararDisparar(); // Detener el disparo al salir
+        // Marcamos que el enemigo ya no está disparando
+        enemigoIA.estaDisparando = false;
         base.Salir();
     }
 
     public bool PuedeAtacar()
     {
+        // Declaramos Raycast
+        RaycastHit hit;
+
+        // Calculamos la distancia entre el enemigo y el jugador
         float distancia = Vector3.Distance(enemigoIA.enemigo.transform.position, enemigoIA.jugador.transform.position);
+
+        // Si el jugador está dentro del rango de ataque
+        if (distancia < rangoAtaque)
+        {
+            // Calcula la dirección en la que el enemigo debe disparar
+            Vector3 direccion = (enemigoIA.jugador.transform.position - enemigoIA.transform.position);
+
+            if (Physics.Raycast(enemigoIA.transform.position, direccion, out hit, distancia))
+            {
+                Debug.Log("Raycast golpeó: " + hit.collider.gameObject.name);
+
+                // Si el raycast golpea al jugador, significa que lo ve
+                if (hit.collider.gameObject.name == "Jugador")
+                {
+                    // Si el enemigo no está disparando, inicia el disparo
+                    if (!enemigoIA.estaDisparando)
+                    {
+                        enemigoIA.agente.speed = 0f;
+                        enemigoIA.empezarDisparar();
+                        return true;
+                    }
+
+                }
+
+                // Si no colisiona con el jugador
+                else
+                {
+                    enemigoIA.pararDisparar();
+                    enemigoIA.estaDisparando = true;
+                    return false;
+                }
+            }
+
+        }
+
+        // Retorna true si la distancia es menor o igual al rango de ataque
         return distancia <= rangoAtaque;
+
     }
 }
